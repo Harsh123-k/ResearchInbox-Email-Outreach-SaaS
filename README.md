@@ -53,7 +53,6 @@ npm run build
 npm start
 ```
 - **Frontend Application**: `https://research-inbox-email-outreach-saa-s.vercel.app/login`
-- **Bull Board Dashboard**: `http://localhost:5000/admin/queues`
 - **Database**: SQLite / PostgreSQL schema (`backend/data/reachinbox.db`) auto-initializes upon launch.
 
 ---

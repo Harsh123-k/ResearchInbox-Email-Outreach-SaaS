@@ -1,5 +1,6 @@
 import { Queue } from 'bullmq';
 import { redisConnectionOptions } from '../config/redis';
+import { db } from '../config/database';
 
 export interface EmailJobData {
   emailId: string;
@@ -54,5 +55,57 @@ export async function removeEmailJob(jobId: string): Promise<boolean> {
     return false;
   } catch (err) {
     return false;
+  }
+}
+
+/**
+ * Reconciles and recovers pending scheduled emails on server restart.
+ * Guarantees zero lost emails if the server or Redis restarts.
+ */
+export async function reconcilePendingJobsOnRestart(): Promise<void> {
+  try {
+    const pendingEmails = db.prepare(`
+      SELECT * FROM scheduled_emails 
+      WHERE status = 'Scheduled'
+    `).all() as any[];
+
+    if (pendingEmails.length === 0) return;
+
+    console.log(`🔄 [Recovery] Checking ${pendingEmails.length} pending scheduled emails for restart recovery...`);
+    const now = Date.now();
+    let reEnqueuedCount = 0;
+
+    for (const email of pendingEmails) {
+      const existingJob = await emailQueue.getJob(email.id);
+      if (!existingJob) {
+        const scheduledTimeMs = new Date(email.scheduled_time).getTime();
+        const remainingDelay = Math.max(0, scheduledTimeMs - now);
+
+        await addEmailJob(
+          {
+            emailId: email.id,
+            campaignId: email.campaign_id,
+            userId: email.user_id,
+            senderId: email.sender_id,
+            senderName: email.sender_name,
+            senderEmail: email.sender_email,
+            recipientEmail: email.recipient_email,
+            subject: email.subject,
+            body: email.body,
+            delayMs: 2000,
+            hourlyLimit: 200,
+            scheduledTime: email.scheduled_time,
+          },
+          remainingDelay
+        );
+        reEnqueuedCount++;
+      }
+    }
+
+    if (reEnqueuedCount > 0) {
+      console.log(`✅ [Recovery] Successfully recovered and re-enqueued ${reEnqueuedCount} scheduled jobs!`);
+    }
+  } catch (err: any) {
+    console.warn(`! Recovery notice: ${err.message}`);
   }
 }

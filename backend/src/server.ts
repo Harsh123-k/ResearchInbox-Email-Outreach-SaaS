@@ -9,7 +9,7 @@ import { authRouter } from './routes/authRoutes';
 import { emailRouter } from './routes/emailRoutes';
 import { slackRouter } from './routes/slackRoutes';
 import { senderRouter } from './routes/senderRoutes';
-import { emailQueue } from './services/queueService';
+import { emailQueue, reconcilePendingJobsOnRestart } from './services/queueService';
 import { startEmailWorker } from './workers/emailWorker';
 import { initElasticsearch } from './config/elasticsearch';
 import { initEmailTransporter } from './services/emailService';
@@ -65,4 +65,5 @@ const server = app.listen(PORT, () => {
   initEmailTransporter().catch(console.error);
   initElasticsearch().catch(console.error);
   startEmailWorker();
+  reconcilePendingJobsOnRestart().catch(console.error);
 });

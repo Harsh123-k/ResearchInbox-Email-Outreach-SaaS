@@ -52,7 +52,7 @@ npm install
 npm run build
 npm start
 ```
-- **Backend API URL**: `http://localhost:5000`
+- **Frontend Application**: `http://localhost:5173/login`
 - **Bull Board Dashboard**: `http://localhost:5000/admin/queues`
 - **Database**: SQLite / PostgreSQL schema (`backend/data/reachinbox.db`) auto-initializes upon launch.
 

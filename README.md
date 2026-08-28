@@ -65,7 +65,7 @@ cd frontend
 npm install
 npm run dev
 ```
-- **Frontend Web UI**: `http://localhost:5173`
+- **Frontend Web UI**: `https://research-inbox-email-outreach-saa-s.vercel.app/login`
 
 ---
 

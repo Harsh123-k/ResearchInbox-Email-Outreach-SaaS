@@ -202,52 +202,6 @@ Persistence is guaranteed across application crashes and server restarts through
 
 ---
 
-## 🎬 5-Minute Demo Video Walkthrough Guide
-
-Follow this walkthrough script to record a comprehensive 5-minute demo video:
-
-### ⏱️ Timeline & Script:
-
-#### **[0:00 - 0:45] Intro & Figma Design Visual Walkthrough**
-- Open `http://localhost:5173/login`.
-- Highlight the centered login card with subtle pink/magenta outline accent and Google OAuth button.
-- Click **"Demo Admin"** or **"Continue with Google"** to log in instantly.
-- Show the dashboard header, compact sidebar with badge counts, and the minimalist table styling.
-
-#### **[0:45 - 2:00] Composing & Scheduling an Email Campaign**
-- Click **"+ Compose New Email"**.
-- Demonstrate the **Sender (`From:`)** dropdown.
-- Demonstrate adding recipient chips manually and removing them (`×`).
-- Click **"Upload CSV / TXT"** and upload a sample lead list (`leads.csv`).
-- Point out the detection summary badge: `✓ 120 email addresses detected`.
-- Set **Start Time** to 10 seconds in the future, **Delay between emails** to `2` seconds, and **Hourly Limit** to `200`.
-- Format the email body using the **Rich Text Toolbar** (Bold, Bullet List, Link).
-- Click the primary green **"Schedule"** button — observe the loading spinner and `✓ Scheduled!` state.
-
-#### **[2:00 - 3:00] Scheduled Table, Live Processing & Ethereal Previews**
-- View the new emails in the **Scheduled Emails** table with the pulsing `Scheduled` pill badge.
-- Open the **Bull Board** queue monitor (`http://localhost:5000/admin/queues`) in another tab to show the delayed jobs waiting in Redis.
-- As the scheduled start time arrives, watch the table auto-update as jobs move from `Scheduled` to `Sent`.
-- Switch to the **Sent Emails** tab.
-- Click the **"Ethereal Preview"** button on a delivered email to open the live rendered HTML email in Ethereal Mail!
-
-#### **[3:00 - 4:00] Server Restart & Persistence Recovery Scenario**
-- Schedule an email batch 30 seconds into the future.
-- Stop the backend process (`Ctrl + C` in terminal).
-- Point out: The frontend and server are offline, but the jobs are safely recorded in both SQLite/PostgreSQL and Redis.
-- Restart the backend: `npm start`.
-- Show the console output:
-  `🔄 [Recovery] Checking pending scheduled emails for restart recovery...`
-  `✅ [Recovery] Successfully recovered and re-enqueued scheduled jobs!`
-- Show that when the timer expires, the emails are delivered without any data loss or duplicates.
-
-#### **[4:00 - 5:00] Elasticsearch Search & Slack Integration Under Load**
-- Type a query in the top search bar (e.g. `enterprise` or lead name) — show the instant results returned by the Elasticsearch endpoint (`/api/emails/search?q=...`).
-- In the sidebar, click **"Connect Slack"** — show the `✓ Active` badge.
-- Point out the live Slack delivery notifications logged for each delivered email.
-
----
-
 ## 💡 Assumptions, Shortcuts & Trade-offs
 
 1. **Database Engine (Zero-Configuration SQLite / PostgreSQL Dialect)**:
@@ -264,6 +218,3 @@ Follow this walkthrough script to record a comprehensive 5-minute demo video:
    - *Rationale*: Allows evaluating the live block message notifications without requiring pre-registered Slack App Client IDs.
 
 ---
-
-## 📄 License
-MIT License. Built for ReachInbox Engineering Assessment.
